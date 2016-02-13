@@ -83,6 +83,15 @@ XCDF_ADD_EXECUTABLE (TARGET buffer-fill-test SOURCES tests/BufferFillTest.cc)
 XCDF_ADD_EXECUTABLE (TARGET append-test SOURCES tests/AppendTest.cc)
 XCDF_ADD_EXECUTABLE (TARGET utility SOURCES utilities/XCDFUtility.cc)
 
+MESSAGE (STATUS "Checking for boost libraries for unit tests")
+find_package(Boost COMPONENTS system filesystem unit_test_framework)
+IF(Boost_FOUND)
+  MESSAGE (STATUS "Necessary Boost libraries found will build & run unit tests for XCDF")
+ELSE ()
+  MESSAGE (WARNING "Boost libraries missing will not build unit tests")
+ENDIF ()
+
+
 # Add an uninstallation script
 CONFIGURE_FILE(
   "${CMAKE_CURRENT_SOURCE_DIR}/cmake/cmake_uninstall.cmake.in"
