@@ -60,3 +60,28 @@ FUNCTION (XCDF_ADD_EXECUTABLE)
   ENDIF (XCDF_ADD_EXECUTABLE_EXE_NAME)
   INSTALL (TARGETS ${_exename} DESTINATION bin)
 ENDFUNCTION( )
+
+# ------------------------------------------------------------------------------
+# Macro XCDF_ADD_UNIT_TEST
+# ------------------------------------------------------------------------------
+FUNCTION (XCDF_ADD_UNIT_TEST)
+  SET (oneValueArgs TARGET SOURCES EXE_NAME)
+
+  CMAKE_PARSE_ARGUMENTS(XCDF_ADD_UNIT_TEST "${options}" "${oneValueArgs}" "${multiValueArgs}" "${ARGN}")
+
+  SET (_exe "${XCDF_ADD_UNIT_TEST_TARGET}")
+  SET (_testname "${XCDF_ADD_UNIT_TEST_TARGET}")
+
+  NO_DOTFILE_GLOB (${_exe}_SOURCES ${XCDF_ADD_UNIT_TEST_SOURCES})
+
+  ADD_EXECUTABLE (${_testname} ${${_exe}_SOURCES})
+  TARGET_LINK_LIBRARIES (${_testname} xcdf z m ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY})
+  SET_TARGET_PROPERTIES(${_testname} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/unit-tests)
+  add_test(NAME ${_testname} 
+           WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/unit-tests 
+           COMMAND ${CMAKE_CURRENT_BINARY_DIR}/unit-tests/${_testname}) 
+ENDFUNCTION( )
+
+ 
+
+
