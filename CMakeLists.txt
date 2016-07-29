@@ -24,8 +24,8 @@ ENDIF ("${CMAKE_SOURCE_DIR}" STREQUAL "${CMAKE_BINARY_DIR}")
 # ------------------------------------------------------------------------------
 # Release information
 # ------------------------------------------------------------------------------
-SET (XCDF_MAJOR_VERSION  2 CACHE STRING "Major version number")
-SET (XCDF_MINOR_VERSION  11 CACHE STRING "Minor version number")
+SET (XCDF_MAJOR_VERSION  3 CACHE STRING "Major version number")
+SET (XCDF_MINOR_VERSION  0 CACHE STRING "Minor version number")
 SET (XCDF_PATCH_VERSION  0 CACHE STRING "Patch number")
 
 # ------------------------------------------------------------------------------
@@ -81,7 +81,8 @@ XCDF_ADD_EXECUTABLE (TARGET speed-test SOURCES tests/SpeedTest.cc)
 XCDF_ADD_EXECUTABLE (TARGET simple-test SOURCES tests/SimpleTest.cc)
 XCDF_ADD_EXECUTABLE (TARGET buffer-fill-test SOURCES tests/BufferFillTest.cc)
 XCDF_ADD_EXECUTABLE (TARGET append-test SOURCES tests/AppendTest.cc)
-XCDF_ADD_EXECUTABLE (TARGET utility SOURCES utilities/XCDFUtility.cc)
+XCDF_ADD_EXECUTABLE (TARGET utility SOURCES utilities/XCDFUtility.cc EXE_NAME xcdf)
+
 
 MESSAGE (STATUS "Checking for boost libraries for unit tests")
 find_package(Boost COMPONENTS system filesystem unit_test_framework)

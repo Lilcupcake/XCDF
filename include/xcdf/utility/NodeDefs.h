@@ -153,42 +153,6 @@ class BinaryNode : public Node<ReturnType> {
 
 };
 
-// LogicalORNode is special -- it should always be a scalar
-template <typename T, typename U, typename DominantType>
-class LogicalORNode : public Node<uint64_t> {
-
-  public:
-
-    LogicalORNode(Node<T>& n1, Node<U>& n2) : n1_(n1),
-                                              n2_(n2) { }
-
-    uint64_t operator[](unsigned index) const {
-
-      unsigned size1 = n1_.GetSize();
-      for (unsigned i = 0; i < size1; ++i) {
-        if (static_cast<DominantType>(n1_[i])) {
-          return true;
-        }
-      }
-
-      unsigned size2 = n2_.GetSize();
-      for (unsigned i = 0; i < size2; ++i) {
-        if (static_cast<DominantType>(n2_[i])) {
-          return true;
-        }
-      }
-
-      return false;
-    }
-
-    unsigned GetSize() const {return 1;}
-
-  private:
-
-    Node<T>& n1_;
-    Node<U>& n2_;
-};
-
 template <typename T, typename U, typename DominantType>
 class AdditionNode : public BinaryNode<T, U, DominantType, DominantType,
                                        AdditionNode<T, U, DominantType> > {
@@ -368,6 +332,20 @@ class LogicalANDNode :
 };
 
 template <typename T, typename U, typename DominantType>
+class LogicalORNode :
+   public BinaryNode<T, U, DominantType,
+                       uint64_t, LogicalORNode<T, U, DominantType> > {
+
+  public:
+
+    LogicalORNode(Node<T>& n1, Node<U>& n2) :
+           BinaryNode<T, U, DominantType, uint64_t,
+                         LogicalORNode<T, U, DominantType> >(n1, n2) { }
+
+    uint64_t Evaluate(DominantType a, DominantType b) const {return a || b;}
+};
+
+template <typename T, typename U, typename DominantType>
 class BitwiseORNode :
   public BinaryNode<T, U, DominantType,
               DominantType, BitwiseORNode<T, U, DominantType> > {
@@ -394,6 +372,7 @@ class BitwiseORNode<T, U, double> :
 
     double Evaluate(double a, double b) const {
       XCDFFatal("Bitwise OR requested for floating point data");
+      return 0.; // Unreachable
     }
 };
 
@@ -424,6 +403,8 @@ class BitwiseANDNode<T, U, double> :
 
     double Evaluate(double a, double b) const {
       XCDFFatal("Bitwise AND requested for floating point data");
+      return 0.; // Unreachable
+
     }
 };
 
@@ -466,6 +447,7 @@ class BitwiseNOTNode<double> : public Node<double> {
 
   double operator[](unsigned idx) const {
     XCDFFatal("Bitwise NOT requested for floating point data");
+    return 0.; // Unreachable
   }
   unsigned GetSize() const {return n1_.GetSize();}
 
